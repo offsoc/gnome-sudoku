@@ -50,6 +50,7 @@ public class Sudoku : Adw.Application
     private SimpleAction pause_action;
     private SimpleAction play_custom_game_action;
     private SimpleAction new_game_action;
+    private SimpleAction earmark_mode_action;
 
     private DifficultyCategory play_difficulty;
 
@@ -69,6 +70,7 @@ public class Sudoku : Adw.Application
         {"help", help_cb                                            },
         {"about", about_cb                                          },
         {"fullscreen", fullscreen_cb                                },
+        {"earmark-mode", earmark_mode_cb, null, "false"             },
         {"shortcuts-window", shortcuts_window_cb                    },
         {"preferences-dialog", preferences_dialog_cb                },
         {"quit", quit                                               }
@@ -136,6 +138,7 @@ public class Sudoku : Adw.Application
         set_accels_for_action ("app.help", {"F1"});
 
         undo_action = (SimpleAction) lookup_action ("undo");
+        earmark_mode_action = (SimpleAction) lookup_action ("earmark-mode");
         redo_action = (SimpleAction) lookup_action ("redo");
         new_game_action = (SimpleAction) lookup_action ("new-game");
         clear_action = (SimpleAction) lookup_action ("reset");
@@ -222,6 +225,12 @@ public class Sudoku : Adw.Application
 
         window.display_pause_button ();
         view.queue_draw ();
+    }
+
+    private void earmark_mode_cb ()
+    {
+        window.view.earmark_mode = !window.view.earmark_mode;
+        earmark_mode_action.set_state (window.view.earmark_mode);
     }
 
     private void play_custom_game_cb ()
@@ -332,6 +341,7 @@ public class Sudoku : Adw.Application
         undo_action.set_enabled (!game.is_undostack_null ());
         redo_action.set_enabled (!game.is_redostack_null ());
         new_game_action.set_enabled (true);
+        earmark_mode_action.set_enabled (mode == GameMode.PLAY);
 
         clear_action.set_enabled (!game.is_empty ());
         play_custom_game_action.set_enabled (!game.is_empty ());

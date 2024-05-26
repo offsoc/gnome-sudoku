@@ -37,6 +37,7 @@ public class SudokuWindow : Adw.ApplicationWindow
     [GtkChild] private unowned Box game_box; // Holds the view
 
     [GtkChild] private unowned MenuButton main_menu;
+    [GtkChild] private unowned ToggleButton earmark_mode;
     [GtkChild] private unowned Button undo_button;
     [GtkChild] private unowned Button redo_button;
     [GtkChild] private unowned Button back_button;
@@ -144,6 +145,7 @@ public class SudokuWindow : Adw.ApplicationWindow
         add_binding_action (Gdk.Key.z, Gdk.ModifierType.CONTROL_MASK, "app.undo", null);
         add_binding_action (Gdk.Key.r, Gdk.ModifierType.NO_MODIFIER_MASK, "app.redo", null);
         add_binding_action (Gdk.Key.z, Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK, "app.redo", null);
+        add_binding_action (Gdk.Key.e, Gdk.ModifierType.NO_MODIFIER_MASK, "app.earmark-mode", null);
         add_binding_action (Gdk.Key.question, Gdk.ModifierType.CONTROL_MASK, "app.shortcuts-window", null);
         add_binding_action (Gdk.Key.comma, Gdk.ModifierType.CONTROL_MASK, "app.preferences-dialog", null);
         add_binding_action (Gdk.Key.f, Gdk.ModifierType.NO_MODIFIER_MASK, "app.fullscreen", null);
@@ -255,6 +257,7 @@ public class SudokuWindow : Adw.ApplicationWindow
         windowtitle.subtitle = _("Select Difficulty");
         set_board_visible (false);
         back_button.visible = game != null;
+        earmark_mode.visible = false;
         undo_button.visible = false;
         redo_button.visible = false;
         clock_box.visible = false;
@@ -306,6 +309,7 @@ public class SudokuWindow : Adw.ApplicationWindow
         back_button.visible = false;
         undo_button.visible = true;
         redo_button.visible = true;
+        earmark_mode.set_visible (game.mode == GameMode.PLAY);
 
         if (game.mode == GameMode.PLAY)
         {
